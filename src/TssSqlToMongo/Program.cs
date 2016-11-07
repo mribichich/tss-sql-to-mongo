@@ -39,28 +39,27 @@
             {
                 var commandSender = container.Resolve<ICommandSender>();
 
-                for (var i = 0; i < 2; i++)
+                foreach (var device in controllers)
                 {
                     Console.Write("creating device...");
 
-                    var device = controllers[i];
+                    commandSender.Send(
+                        new CreateDeviceCommand(
+                            device.Id,
+                            null,
+                            device.Name,
+                            device.IpAddress,
+                            device.DeviceType,
+                            device.ModBusId,
+                            device.IsCheckInOrOut,
+                            device.ExternalId,
+                            device.MacAddress,
+                            device.Readers.Select(s => new Reader(s.Id, s.Number)),
+                            device.AccessType,
+                            device.LocationName,
+                            device.HasMaglock));
 
-                    var cmd = new CreateDeviceCommand(
-                        device.Id,
-                        null,
-                        device.Name,
-                        device.IpAddress,
-                        device.DeviceType,
-                        device.ModBusId,
-                        device.IsCheckInOrOut,
-                        device.ExternalId,
-                        device.MacAddress,
-                        device.Readers.Select(s => new Reader(s.Id, s.Number)),
-                        device.AccessType,
-                        device.LocationName,
-                        device.HasMaglock);
-
-                    commandSender.Send(cmd);
+                    commandSender.Send(new UpdateDeviceFromDeviceInfoCommand(device.Id, null, null, device.Type.Value, device.DeviceVersion));
 
                     Console.WriteLine(" done!");
                 }
@@ -159,8 +158,7 @@
                     MultipleActiveResultSets = true
                 };
 
-                sqlConn =
-                    new SqlConnection(builder.ConnectionString);
+                sqlConn = new SqlConnection(builder.ConnectionString);
 
                 sqlConn.Open();
 
