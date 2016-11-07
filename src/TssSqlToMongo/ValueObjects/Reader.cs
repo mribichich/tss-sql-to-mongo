@@ -1,4 +1,4 @@
-﻿namespace ConsoleApplication2.ValueObjects
+﻿namespace TssSqlToMongo.ValueObjects
 {
     using System;
 

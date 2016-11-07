@@ -1,6 +1,6 @@
-namespace ConsoleApplication2.ReadModel.Services
+namespace TssSqlToMongo.ReadModel.Services
 {
-    using ConsoleApplication2.ReadModel.Events;
+    using TssSqlToMongo.ReadModel.Events;
 
     public interface IDevicesWriteService
     {

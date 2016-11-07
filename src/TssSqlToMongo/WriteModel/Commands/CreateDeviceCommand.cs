@@ -1,10 +1,10 @@
-﻿namespace ConsoleApplication2.WriteModel.Commands
+﻿namespace TssSqlToMongo.WriteModel.Commands
 {
     using System;
     using System.Collections.Generic;
 
-    using ConsoleApplication2.Core;
-    using ConsoleApplication2.ValueObjects;
+    using TssSqlToMongo.Core;
+    using TssSqlToMongo.ValueObjects;
 
     public class CreateDeviceCommand : BaseCommand
     {

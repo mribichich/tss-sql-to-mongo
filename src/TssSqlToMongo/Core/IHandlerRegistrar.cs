@@ -1,4 +1,4 @@
-﻿namespace ConsoleApplication2.Core
+﻿namespace TssSqlToMongo.Core
 {
     using System;
 

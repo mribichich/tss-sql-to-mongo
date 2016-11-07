@@ -1,4 +1,4 @@
-﻿namespace ConsoleApplication2.Data.UnitOfWorks
+﻿namespace TssSqlToMongo.Data.UnitOfWorks
 {
     public class MongoDbDataStoreOptions
     {

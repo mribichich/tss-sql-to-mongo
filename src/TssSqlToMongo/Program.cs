@@ -1,36 +1,39 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ConsoleApplication2
+﻿namespace TssSqlToMongo
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.SqlClient;
+    using System.IO;
+    using System.Linq;
     using System.Reflection;
 
     using Autofac;
 
-    using ConsoleApplication2.Core;
-    using ConsoleApplication2.Data;
-    using ConsoleApplication2.Data.UnitOfWorks;
-    using ConsoleApplication2.ReadModel.Services;
-    using ConsoleApplication2.Sql;
-    using ConsoleApplication2.ValueObjects;
-    using ConsoleApplication2.WriteModel.Commands;
-    using ConsoleApplication2.WriteModel.Handlers;
+    using TssSqlToMongo.Config;
+    using TssSqlToMongo.Core;
+    using TssSqlToMongo.Data;
+    using TssSqlToMongo.Data.UnitOfWorks;
+    using TssSqlToMongo.ReadModel.Services;
+    using TssSqlToMongo.Sql;
+    using TssSqlToMongo.ValueObjects;
+    using TssSqlToMongo.WriteModel.Commands;
+    using TssSqlToMongo.WriteModel.Handlers;
+
+    using YamlDotNet.Serialization;
+    using YamlDotNet.Serialization.NamingConventions;
 
     class Program
     {
         private static List<DeviceSql> controllers;
-        private static List<ReaderSql> readers;
         private static IContainer container;
 
         static void Main(string[] args)
         {
             UseAutoFac();
 
-            GetSqlData();
+            var appConfig = container.Resolve<IAppConfig>();
+
+            GetSqlData(appConfig);
 
             try
             {
@@ -74,13 +77,25 @@ namespace ConsoleApplication2
 
         private static void UseAutoFac()
         {
+            var config = AddConfig();
+
             var builder = new ContainerBuilder();
 
-            builder.Register(c => new MongoDbDataStoreOptions().UseDatabase("SisControlPanelApi2"));
+            builder.RegisterInstance(config)
+                .As<IAppConfig>();
+
+            builder.Register(
+                c => new MongoDbDataStoreOptions().UseHost(config.MongoDbDataStore?.Host)
+                         .UsePort(config.MongoDbDataStore?.Port)
+                         .UseDatabase(config.MongoDbDataStore?.Database));
             builder.RegisterType<MongoDbDataStore>()
                 .As<IDataStore>()
                 .SingleInstance();
-            builder.Register(c => new MongoDbEventStoreOptions().UseDatabase("SisControlPanelApi2"));
+            builder.Register(
+                c => new MongoDbEventStoreOptions().UseHost(config.MongoDbEventStore?.Host)
+                         .UsePort(config.MongoDbEventStore?.Port)
+                         .UseDatabase(config.MongoDbEventStore?.Database)
+                         .UseCollection(config.MongoDbEventStore?.Collection));
             builder.RegisterType<MongoDbEventStore>()
                 .As<IEventStore>()
                 .SingleInstance();
@@ -107,26 +122,51 @@ namespace ConsoleApplication2
             builder.RegisterGeneric(typeof(TransactionalHandler<>));
 
             container = builder.Build();
-            
+
             var registrar = new BusRegistrar(container);
             registrar.Register(typeof(CreateDeviceHandler));
         }
 
-        private static void GetSqlData()
+        private static IAppConfig AddConfig()
+        {
+            var config = new AppConfig();
+
+            var configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"conf\appsettings.yaml");
+
+            if (File.Exists(configFilePath))
+            {
+                var content = File.ReadAllText(configFilePath);
+
+                var deserializer = new Deserializer(namingConvention: new CamelCaseNamingConvention());
+                config = deserializer.Deserialize<AppConfig>(content);
+            }
+
+            return config;
+        }
+
+        private static void GetSqlData(IAppConfig appConfig)
         {
             SqlConnection sqlConn = null;
 
             try
             {
+                var builder = new SqlConnectionStringBuilder()
+                {
+                    DataSource = appConfig.SisAccessSqlDb.Host,
+                    InitialCatalog = appConfig.SisAccessSqlDb.Database,
+                    UserID = appConfig.SisAccessSqlDb.Username,
+                    Password = appConfig.SisAccessSqlDb.Password,
+                    MultipleActiveResultSets = true
+                };
+
                 sqlConn =
-                    new SqlConnection(
-                        @"Data Source=.\SQLEXPRESS;Initial Catalog=Sis.Access_dev;user id=sisserver;password=aM6T30jFDM3VbwU5;MultipleActiveResultSets=True");
+                    new SqlConnection(builder.ConnectionString);
 
                 sqlConn.Open();
 
                 controllers = GetControllers(sqlConn);
 
-                readers = GetReaders(sqlConn);
+                var readers = GetReaders(sqlConn);
 
                 foreach (var controller in controllers)
                 {
@@ -162,21 +202,21 @@ namespace ConsoleApplication2
             while (dataReader.Read())
             {
                 var controller = new DeviceSql()
-                    {
-                        Id = Guid.Parse(dataReader["ID_Controladora"].ToString()),
-                        Name = dataReader["Name"]?.ToString(),
-                        IpAddress = dataReader["IpAddress"]?.ToString(),
-                        DeviceType = dataReader["DeviceType"]?.ToString(),
-                        ModBusId = Convert.ToInt32(dataReader["ID_Modbus"]),
-                        IsCheckInOrOut = Convert.ToBoolean(dataReader["IsCheckInOrOut"]),
-                        ExternalId = Convert.ToInt32(dataReader["id"]),
-                        MacAddress = dataReader["MacAddress"]?.ToString(),
-                        DeviceVersion = dataReader["DeviceVersion"]?.ToString(),
-                        Type = dataReader["Type"] != DBNull.Value ? Convert.ToInt32(dataReader["Type"]) : (int?)null,
-                        AccessType = dataReader["AccessType"] != DBNull.Value ? Convert.ToInt32(dataReader["AccessType"]) : (int?)null,
-                        LocationName = dataReader["LocationName"]?.ToString(),
-                        HasMaglock = dataReader["HasMaglock"] != DBNull.Value ? Convert.ToBoolean(dataReader["HasMaglock"]) : (bool?)null
-                    };
+                {
+                    Id = Guid.Parse(dataReader["ID_Controladora"].ToString()),
+                    Name = dataReader["Name"]?.ToString(),
+                    IpAddress = dataReader["IpAddress"]?.ToString(),
+                    DeviceType = dataReader["DeviceType"]?.ToString(),
+                    ModBusId = Convert.ToInt32(dataReader["ID_Modbus"]),
+                    IsCheckInOrOut = Convert.ToBoolean(dataReader["IsCheckInOrOut"]),
+                    ExternalId = Convert.ToInt32(dataReader["id"]),
+                    MacAddress = dataReader["MacAddress"]?.ToString(),
+                    DeviceVersion = dataReader["DeviceVersion"]?.ToString(),
+                    Type = dataReader["Type"] != DBNull.Value ? Convert.ToInt32(dataReader["Type"]) : (int?)null,
+                    AccessType = dataReader["AccessType"] != DBNull.Value ? Convert.ToInt32(dataReader["AccessType"]) : (int?)null,
+                    LocationName = dataReader["LocationName"]?.ToString(),
+                    HasMaglock = dataReader["HasMaglock"] != DBNull.Value ? Convert.ToBoolean(dataReader["HasMaglock"]) : (bool?)null
+                };
 
                 controllers.Add(controller);
             }
@@ -195,11 +235,11 @@ namespace ConsoleApplication2
             while (dataReader.Read())
             {
                 var reader = new ReaderSql()
-                    {
-                        Id = Guid.Parse(dataReader["Id"].ToString()),
-                        Number = Convert.ToInt32(dataReader["Number"]),
-                        ControllerId = Guid.Parse(dataReader["ControllerId"].ToString()),
-                    };
+                {
+                    Id = Guid.Parse(dataReader["Id"].ToString()),
+                    Number = Convert.ToInt32(dataReader["Number"]),
+                    ControllerId = Guid.Parse(dataReader["ControllerId"].ToString()),
+                };
 
                 readers.Add(reader);
             }

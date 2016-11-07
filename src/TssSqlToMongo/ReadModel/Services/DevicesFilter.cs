@@ -1,4 +1,4 @@
-﻿namespace ConsoleApplication2.ReadModel.Services
+﻿namespace TssSqlToMongo.ReadModel.Services
 {
     public class DevicesFilter
     {

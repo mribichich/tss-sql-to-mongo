@@ -1,16 +1,14 @@
-﻿namespace ConsoleApplication2.Data.UnitOfWorks
+﻿namespace TssSqlToMongo.Data.UnitOfWorks
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq.Expressions;
-    using System.Threading.Tasks;
-
-    using ConsoleApplication2.Core;
-    using ConsoleApplication2.Data.Entities;
 
     using MongoDB.Bson.Serialization;
     using MongoDB.Bson.Serialization.Conventions;
     using MongoDB.Driver;
+
+    using TssSqlToMongo.Core;
+    using TssSqlToMongo.Data.Entities;
 
     public class MongoDbDataStore : IDataStore
     {

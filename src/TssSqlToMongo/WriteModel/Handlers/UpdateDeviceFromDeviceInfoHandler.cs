@@ -1,10 +1,10 @@
-namespace ConsoleApplication2.WriteModel.Handlers
+namespace TssSqlToMongo.WriteModel.Handlers
 {
     using System.Diagnostics;
 
-    using ConsoleApplication2.AggregateRoots;
-    using ConsoleApplication2.Core;
-    using ConsoleApplication2.WriteModel.Commands;
+    using TssSqlToMongo.AggregateRoots;
+    using TssSqlToMongo.Core;
+    using TssSqlToMongo.WriteModel.Commands;
 
     public class UpdateDeviceFromDeviceInfoHandler : ICommandHandler<UpdateDeviceFromDeviceInfoCommand>
     {

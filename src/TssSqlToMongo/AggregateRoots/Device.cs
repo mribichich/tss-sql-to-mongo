@@ -1,12 +1,12 @@
-﻿namespace ConsoleApplication2.AggregateRoots
+﻿namespace TssSqlToMongo.AggregateRoots
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    using ConsoleApplication2.Core;
-    using ConsoleApplication2.ReadModel.Events;
-    using ConsoleApplication2.ValueObjects;
+    using TssSqlToMongo.Core;
+    using TssSqlToMongo.ReadModel.Events;
+    using TssSqlToMongo.ValueObjects;
 
     public class Device : AggregateRoot,
                           IApplyEvent<DeviceCreated>,

@@ -1,11 +1,11 @@
-namespace ConsoleApplication2.Core
+namespace TssSqlToMongo.Core
 {
     using System;
     using System.Linq.Expressions;
 
-    using ConsoleApplication2.Data.Entities;
-
     using MongoDB.Driver;
+
+    using TssSqlToMongo.Data.Entities;
 
     public interface IDataStore
     {

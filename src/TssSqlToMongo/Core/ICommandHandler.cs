@@ -1,6 +1,6 @@
-namespace ConsoleApplication2.Core
+namespace TssSqlToMongo.Core
 {
-    using ConsoleApplication2.ReadModel.Handlers;
+    using TssSqlToMongo.ReadModel.Handlers;
 
     public interface ICommandHandler<T> : IHandler<T>
         where T : ICommand

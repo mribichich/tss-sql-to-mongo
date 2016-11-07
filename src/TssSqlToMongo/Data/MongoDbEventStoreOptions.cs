@@ -1,4 +1,4 @@
-namespace ConsoleApplication2.Data
+namespace TssSqlToMongo.Data
 {
     public class MongoDbEventStoreOptions
     {

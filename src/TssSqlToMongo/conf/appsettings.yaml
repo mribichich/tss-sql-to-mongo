@@ -1,0 +1,16 @@
+﻿sisAccessSqlDb:
+    host: .\SQLEXPRESS
+    database: Sis.Access_dev
+    username: sisserver
+    password: aM6T30jFDM3VbwU5
+
+mongoDbEventStore:
+    host: localhost
+    port: 27017
+    database: SisControlPanelApi
+    collection: events
+
+mongoDbDataStore:
+    host: localhost
+    port: 27017
+    database: SisControlPanelApi

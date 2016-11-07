@@ -1,12 +1,10 @@
-namespace ConsoleApplication2.ReadModel.Services
+namespace TssSqlToMongo.ReadModel.Services
 {
-    using ConsoleApplication2.Core;
-    using ConsoleApplication2.Data.Entities;
-    using ConsoleApplication2.Data.UnitOfWorks;
-    using ConsoleApplication2.ReadModel.Events;
-    using ConsoleApplication2.ReadModel.Translators;
-
     using MongoDB.Driver;
+
+    using TssSqlToMongo.Core;
+    using TssSqlToMongo.Data.Entities;
+    using TssSqlToMongo.ReadModel.Events;
 
     public class DevicesWriteService : IDevicesWriteService
     {

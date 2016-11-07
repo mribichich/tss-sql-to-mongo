@@ -1,11 +1,11 @@
-﻿namespace ConsoleApplication2.ReadModel.Translators
+﻿namespace TssSqlToMongo.ReadModel.Translators
 {
     using System;
     using System.Collections.Generic;
 
-    using ConsoleApplication2.Core;
-    using ConsoleApplication2.Data.Entities;
-    using ConsoleApplication2.ReadModel.Events;
+    using TssSqlToMongo.Core;
+    using TssSqlToMongo.Data.Entities;
+    using TssSqlToMongo.ReadModel.Events;
 
     public class DeviceCreatedToDeviceDbTranslator : ITranslator<DeviceCreated, DeviceDb>
     {

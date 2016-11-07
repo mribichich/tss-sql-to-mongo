@@ -57,9 +57,18 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="YamlDotNet, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\YamlDotNet.4.0.0\lib\net35\YamlDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AggregateRoots\Device.cs" />
+    <Compile Include="Config\AppConfig.cs" />
+    <Compile Include="Config\IAppConfig.cs" />
+    <Compile Include="Config\MongoDbDataStoreConfig.cs" />
+    <Compile Include="Config\MongoDbEventStoreConfig.cs" />
+    <Compile Include="Config\SisAccessSqlDbConfig.cs" />
     <Compile Include="Core\AggregateFactory.cs" />
     <Compile Include="Core\AggregateNotFoundException.cs" />
     <Compile Include="Core\AggregateOrEventMissingIdException.cs" />
@@ -122,6 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="conf\appsettings.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

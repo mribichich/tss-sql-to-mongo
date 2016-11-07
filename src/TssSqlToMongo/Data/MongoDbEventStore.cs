@@ -1,15 +1,15 @@
-﻿namespace ConsoleApplication2.Data
+﻿namespace TssSqlToMongo.Data
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    using ConsoleApplication2.Core;
-    using ConsoleApplication2.ReadModel.Events;
-
     using MongoDB.Bson.Serialization;
     using MongoDB.Bson.Serialization.Conventions;
     using MongoDB.Driver;
+
+    using TssSqlToMongo.Core;
+    using TssSqlToMongo.ReadModel.Events;
 
     public class MongoDbEventStore : IEventStore
     {

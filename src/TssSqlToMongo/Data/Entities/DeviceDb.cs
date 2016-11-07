@@ -1,4 +1,4 @@
-﻿namespace ConsoleApplication2.Data.Entities
+﻿namespace TssSqlToMongo.Data.Entities
 {
     using System;
     using System.Collections.Generic;

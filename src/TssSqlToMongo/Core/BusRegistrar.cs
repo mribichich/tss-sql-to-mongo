@@ -1,4 +1,4 @@
-namespace ConsoleApplication2.Core
+namespace TssSqlToMongo.Core
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@ namespace ConsoleApplication2.Core
 
     using Autofac;
 
-    using ConsoleApplication2.ReadModel.Handlers;
+    using TssSqlToMongo.ReadModel.Handlers;
 
     public class BusRegistrar
     {

@@ -1,8 +1,8 @@
-﻿namespace ConsoleApplication2.ReadModel.Events
+﻿namespace TssSqlToMongo.ReadModel.Events
 {
     using System;
 
-    using ConsoleApplication2.Core;
+    using TssSqlToMongo.Core;
 
     public abstract class BaseDevicesEvent : BaseEvent
     {

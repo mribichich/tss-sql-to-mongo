@@ -1,10 +1,10 @@
-namespace ConsoleApplication2.ReadModel.Handlers
+namespace TssSqlToMongo.ReadModel.Handlers
 {
     using System;
     using System.Diagnostics;
 
-    using ConsoleApplication2.ReadModel.Events;
-    using ConsoleApplication2.ReadModel.Services;
+    using TssSqlToMongo.ReadModel.Events;
+    using TssSqlToMongo.ReadModel.Services;
 
     public class DeviceUpdatedFromDeviceInfoHandler : IEventHandler<DeviceUpdatedFromDeviceInfo>
     {

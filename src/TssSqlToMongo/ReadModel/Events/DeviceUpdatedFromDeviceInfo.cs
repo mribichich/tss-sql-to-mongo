@@ -1,4 +1,4 @@
-namespace ConsoleApplication2.ReadModel.Events
+namespace TssSqlToMongo.ReadModel.Events
 {
     using System;
 

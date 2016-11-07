@@ -1,8 +1,8 @@
-namespace ConsoleApplication2.WriteModel.Commands
+namespace TssSqlToMongo.WriteModel.Commands
 {
     using System;
 
-    using ConsoleApplication2.Core;
+    using TssSqlToMongo.Core;
 
     public class UpdateDeviceFromDeviceInfoCommand : BaseCommand
     {
