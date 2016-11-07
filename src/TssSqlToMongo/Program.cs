@@ -202,17 +202,17 @@
                 var controller = new DeviceSql()
                 {
                     Id = Guid.Parse(dataReader["ID_Controladora"].ToString()),
-                    Name = dataReader["Name"]?.ToString(),
-                    IpAddress = dataReader["IpAddress"]?.ToString(),
-                    DeviceType = dataReader["DeviceType"]?.ToString(),
+                    Name = dataReader["Name"].ToString(),
+                    IpAddress = dataReader["IpAddress"].ToString(),
+                    DeviceType = dataReader["DeviceType"] != DBNull.Value ? dataReader["DeviceType"].ToString() : null,
                     ModBusId = Convert.ToInt32(dataReader["ID_Modbus"]),
                     IsCheckInOrOut = Convert.ToBoolean(dataReader["IsCheckInOrOut"]),
                     ExternalId = Convert.ToInt32(dataReader["id"]),
-                    MacAddress = dataReader["MacAddress"]?.ToString(),
-                    DeviceVersion = dataReader["DeviceVersion"]?.ToString(),
+                    MacAddress = dataReader["MacAddress"] != DBNull.Value ? dataReader["MacAddress"].ToString() : null,
+                    DeviceVersion = dataReader["DeviceVersion"] != DBNull.Value ? dataReader["DeviceVersion"].ToString() : null,
                     Type = dataReader["Type"] != DBNull.Value ? Convert.ToInt32(dataReader["Type"]) : (int?)null,
                     AccessType = dataReader["AccessType"] != DBNull.Value ? Convert.ToInt32(dataReader["AccessType"]) : (int?)null,
-                    LocationName = dataReader["LocationName"]?.ToString(),
+                    LocationName = dataReader["LocationName"] != DBNull.Value ? dataReader["LocationName"].ToString() : null,
                     HasMaglock = dataReader["HasMaglock"] != DBNull.Value ? Convert.ToBoolean(dataReader["HasMaglock"]) : (bool?)null
                 };
 
