@@ -59,7 +59,10 @@
                             device.LocationName,
                             device.HasMaglock));
 
-                    commandSender.Send(new UpdateDeviceFromDeviceInfoCommand(device.Id, null, null, device.Type.Value, device.DeviceVersion));
+                    if (device.Type.HasValue)
+                    {
+                        commandSender.Send(new UpdateDeviceFromDeviceInfoCommand(device.Id, null, null, device.Type.Value, device.DeviceVersion));
+                    }
 
                     Console.WriteLine(" done!");
                 }
