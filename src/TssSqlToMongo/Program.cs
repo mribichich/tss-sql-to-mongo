@@ -29,43 +29,15 @@
 
         static void Main(string[] args)
         {
-            UseAutoFac();
-
-            var appConfig = container.Resolve<IAppConfig>();
-
-            GetSqlData(appConfig);
-
             try
             {
-                var commandSender = container.Resolve<ICommandSender>();
+                UseAutoFac();
 
-                foreach (var device in controllers)
-                {
-                    Console.Write("creating device...");
+                var appConfig = container.Resolve<IAppConfig>();
 
-                    commandSender.Send(
-                        new CreateDeviceCommand(
-                            device.Id,
-                            null,
-                            device.Name,
-                            device.IpAddress,
-                            device.DeviceType,
-                            device.ModBusId,
-                            device.IsCheckInOrOut,
-                            device.ExternalId,
-                            device.MacAddress,
-                            device.Readers.Select(s => new Reader(s.Id, s.Number)),
-                            device.AccessType,
-                            device.LocationName,
-                            device.HasMaglock));
+                GetSqlData(appConfig);
 
-                    if (device.Type.HasValue)
-                    {
-                        commandSender.Send(new UpdateDeviceFromDeviceInfoCommand(device.Id, null, null, device.Type.Value, device.DeviceVersion));
-                    }
-
-                    Console.WriteLine(" done!");
-                }
+                SaveToMongoDb();
             }
             catch (Exception e)
             {
@@ -84,23 +56,28 @@
             var builder = new ContainerBuilder();
 
             builder.RegisterInstance(config)
-                .As<IAppConfig>();
+                .As<IAppConfig>()
+                .SingleInstance();
 
             builder.Register(
                 c => new MongoDbDataStoreOptions().UseHost(config.MongoDbDataStore?.Host)
                          .UsePort(config.MongoDbDataStore?.Port)
                          .UseDatabase(config.MongoDbDataStore?.Database));
+
             builder.RegisterType<MongoDbDataStore>()
                 .As<IDataStore>()
                 .SingleInstance();
+
             builder.Register(
                 c => new MongoDbEventStoreOptions().UseHost(config.MongoDbEventStore?.Host)
                          .UsePort(config.MongoDbEventStore?.Port)
                          .UseDatabase(config.MongoDbEventStore?.Database)
                          .UseCollection(config.MongoDbEventStore?.Collection));
+
             builder.RegisterType<MongoDbEventStore>()
                 .As<IEventStore>()
                 .SingleInstance();
+
             builder.RegisterType<Session>()
                 .As<ISession>()
                 .SingleInstance();
@@ -112,8 +89,12 @@
 
             builder.RegisterType<DevicesWriteService>()
                 .As<IDevicesWriteService>();
-            builder.RegisterType<Repository>()
-                .As<IRepository>();
+
+            builder.RegisterType<Repository>();
+
+            builder.Register(c => new CacheRepository(c.Resolve<Repository>(), c.Resolve<IEventStore>()))
+                .As<IRepository>()
+                .SingleInstance();
 
             builder.RegisterType<InProcessBus>()
                 .As<ICommandSender>()
@@ -182,10 +163,6 @@
                     controller.Readers = new List<ReaderSql>(controllerReaders);
                 }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
             finally
             {
                 sqlConn?.Close();
@@ -198,7 +175,7 @@
 
             var dataReader = sqlComm.ExecuteReader();
 
-            var controllers = new List<DeviceSql>();
+            var deviceSqls = new List<DeviceSql>();
 
             while (dataReader.Read())
             {
@@ -219,10 +196,10 @@
                     HasMaglock = dataReader["HasMaglock"] != DBNull.Value ? Convert.ToBoolean(dataReader["HasMaglock"]) : (bool?)null
                 };
 
-                controllers.Add(controller);
+                deviceSqls.Add(controller);
             }
 
-            return controllers;
+            return deviceSqls;
         }
 
         private static List<ReaderSql> GetReaders(SqlConnection sqlConn)
@@ -246,6 +223,39 @@
             }
 
             return readers;
+        }
+
+        private static void SaveToMongoDb()
+        {
+            var commandSender = container.Resolve<ICommandSender>();
+
+            foreach (var device in controllers)
+            {
+                Console.Write("creating device...");
+
+                commandSender.Send(
+                    new CreateDeviceCommand(
+                        device.Id,
+                        null,
+                        device.Name,
+                        device.IpAddress,
+                        device.DeviceType,
+                        device.ModBusId,
+                        device.IsCheckInOrOut,
+                        device.ExternalId,
+                        device.MacAddress,
+                        device.Readers.Select(s => new Reader(s.Id, s.Number)),
+                        device.AccessType,
+                        device.LocationName,
+                        device.HasMaglock));
+
+                if (device.Type.HasValue)
+                {
+                    commandSender.Send(new UpdateDeviceFromDeviceInfoCommand(device.Id, null, null, device.Type.Value, device.DeviceVersion));
+                }
+
+                Console.WriteLine(" done!");
+            }
         }
     }
 }

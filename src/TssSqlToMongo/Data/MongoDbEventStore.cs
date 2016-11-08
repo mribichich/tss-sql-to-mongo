@@ -30,13 +30,15 @@
 
         public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)
         {
-            return  this.mongoCollection.Find(f => f.AggregateId == aggregateId && f.Version > fromVersion).ToList();
+            return this.mongoCollection.Find(f => f.AggregateId == aggregateId && f.Version > fromVersion).ToList();
         }
 
         private void Config()
         {
             var camelCaseConvention = new ConventionPack { new CamelCaseElementNameConvention() };
             ConventionRegistry.Register("CamelCase", camelCaseConvention, type => true);
+
+            MongoDefaults.GuidRepresentation = MongoDB.Bson.GuidRepresentation.Standard;
 
             this.RegisterAllEvents();
 

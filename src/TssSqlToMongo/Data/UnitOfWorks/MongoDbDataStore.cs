@@ -15,19 +15,19 @@
         private readonly MongoDbDataStoreOptions options;
         private IMongoDatabase mongoDatabase;
 
-       public MongoDbDataStore(MongoDbDataStoreOptions options)
+        public MongoDbDataStore(MongoDbDataStoreOptions options)
         {
             this.options = options;
 
             this.Config();
         }
-        
+
         public void Insert<T>(T entity) where T : IDbEntity
         {
             var entityCollectionName = this.MapEntityToCollection(typeof(T));
-            
-              this.mongoDatabase.GetCollection<T>(entityCollectionName)
-              .InsertOneAsync(entity);
+
+            this.mongoDatabase.GetCollection<T>(entityCollectionName)
+            .InsertOneAsync(entity);
         }
 
         public void FindOneAndUpdate<T>(Expression<Func<T, bool>> filter, UpdateDefinition<T> updateDefinition) where T : IDbEntity
@@ -37,11 +37,11 @@
             this.mongoDatabase.GetCollection<T>(entityCollectionName)
                 .FindOneAndUpdate(filter, updateDefinition);
         }
-        
+
         private string MapEntityToCollection(Type type)
         {
             //// todo: should be extracted and inject by configuration or DI service
-            
+
             if (type == typeof(DeviceDb))
             {
                 return "devices";
@@ -56,7 +56,7 @@
             ConventionRegistry.Register("CamelCase", camelCaseConvention, type => true);
 
             MongoDefaults.GuidRepresentation = MongoDB.Bson.GuidRepresentation.Standard;
-            
+
             BsonClassMap.RegisterClassMap<DeviceDb>();
             BsonClassMap.RegisterClassMap<ReaderDb>();
 

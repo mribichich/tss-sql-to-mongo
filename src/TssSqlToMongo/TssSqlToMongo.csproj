@@ -51,6 +51,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -74,6 +75,7 @@
     <Compile Include="Core\AggregateOrEventMissingIdException.cs" />
     <Compile Include="Core\AggregateRoot.cs" />
     <Compile Include="Core\BusRegistrar.cs" />
+    <Compile Include="Core\CacheRepository.cs" />
     <Compile Include="Core\ConcurrencyException.cs" />
     <Compile Include="Core\EventsOutOfOrderException.cs" />
     <Compile Include="Core\IApplyEvent.cs" />

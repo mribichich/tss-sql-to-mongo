@@ -19,7 +19,7 @@ namespace TssSqlToMongo.WriteModel.Commands
         }
 
         public int Type { get; }
-   
+
         public string DeviceVersion { get; }
- }
+    }
 }
