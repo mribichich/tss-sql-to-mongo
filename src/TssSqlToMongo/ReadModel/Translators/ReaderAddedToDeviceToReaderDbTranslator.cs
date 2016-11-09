@@ -10,7 +10,7 @@ namespace TssSqlToMongo.ReadModel.Translators
         {
             return new ReaderDb()
             {
-                Id = @from.Id,
+                Id = @from.ReaderId,
                 Number = @from.Number
             };
         }

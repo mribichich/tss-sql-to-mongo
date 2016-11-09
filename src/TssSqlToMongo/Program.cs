@@ -44,7 +44,7 @@
                 Console.WriteLine(e);
             }
 
-            Console.WriteLine("Done!");
+            Console.WriteLine("\nDone!");
 
             Console.Read();
         }
@@ -231,7 +231,7 @@
 
             foreach (var device in controllers)
             {
-                Console.Write("creating device...");
+                Console.Write("creating devices: ");
 
                 commandSender.Send(
                     new CreateDeviceCommand(
@@ -254,7 +254,7 @@
                     commandSender.Send(new UpdateDeviceFromDeviceInfoCommand(device.Id, null, null, device.Type.Value, device.DeviceVersion));
                 }
 
-                Console.WriteLine(" done!");
+                Console.Write(".");
             }
         }
     }
